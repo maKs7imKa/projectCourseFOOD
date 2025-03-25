@@ -152,4 +152,51 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     window.addEventListener("scroll", showModalByScroll);
+
+
+    // класи для карточок
+
+    class MenuCard {
+        constructor(src, alt, title, descr, price) {
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.descr = descr;
+            this.price = price;
+            this.transfer = 27;
+            this.changeToUAH();
+        }
+
+        changeToUAH() {
+            this.price = this.price * this.transfer;    
+        }
+
+        render() {
+            const div = document.createElement("div");
+            div.classList.add("menu__item");
+            div.innerHTML = `
+            <img src=${this.src} alt=${this.alt}/>
+            <h3 class="menu__item-subtitle">${this.title}</h3>
+            <div class="menu__item-descr">${this.descr}</div>
+            <div class="menu__item-divider"></div>
+            <div class="menu__item-price">
+                <div class="menu__item-cost">Цена:</div>
+                <div class="menu__item-total"><span>${this.price}</span> грн/день
+                </div>
+            </div>
+            `;
+            document.querySelector(".menu .container").append(div);
+        }
+    }
+
+    const div = new MenuCard(
+        "img/tabs/vegy.jpg",
+        "vegy",
+        'Меню "Фитнес"',
+        'Менюключительно полезные ингредbhvuhblhbrf re fver f er f s gf sd fds fggsdfg иенты',
+        9, 
+    );
+    div.render();
+
+
 });
