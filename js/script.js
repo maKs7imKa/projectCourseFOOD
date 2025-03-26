@@ -157,12 +157,13 @@ window.addEventListener("DOMContentLoaded", () => {
     // класи для карточок
 
     class MenuCard {
-        constructor(src, alt, title, descr, price) {
+        constructor(src, alt, title, descr, price, ...classes) {
             this.src = src;
             this.alt = alt;
             this.title = title;
             this.descr = descr;
             this.price = price;
+            this.classes = classes;
             this.transfer = 27;
             this.changeToUAH();
         }
@@ -174,6 +175,9 @@ window.addEventListener("DOMContentLoaded", () => {
         render() {
             const div = document.createElement("div");
             div.classList.add("menu__item");
+            this.classes.forEach(className => { 
+                div.classList.add(className);
+            });
             div.innerHTML = `
             <img src=${this.src} alt=${this.alt}/>
             <h3 class="menu__item-subtitle">${this.title}</h3>
