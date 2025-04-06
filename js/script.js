@@ -1,5 +1,8 @@
 window.addEventListener("DOMContentLoaded", () => {
-    // tabs
+    //==============================
+    //           tabs
+    //==============================
+
     const tabs = document.querySelectorAll(".tabheader__item");
     const tabsConstent = document.querySelectorAll(".tabcontent");
     const tabsParent = document.querySelector(".tabheader__items");
@@ -33,8 +36,10 @@ window.addEventListener("DOMContentLoaded", () => {
             });
         }
     });
+    //==============================
+    //           timer
+    //==============================
 
-    // timer
     const deadline = "2025-04-20";
 
     function getTimeRemaining(endTime) {
@@ -95,17 +100,19 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     setClock(".timer", deadline);
+    //==============================
+    //           modal
+    //==============================
 
-    // modal
     const modalWindow = document.querySelector(".modal"), // вікно
-        modalOpen = document.querySelectorAll("[data-modal]"), // кнопка відкрити
-        modalClose = document.querySelector("[data-close]"); // кнопка закрити
+        modalOpen = document.querySelectorAll("[data-modal]") // кнопка відкрити
 
     // Функція сховати модальне вікно
     function closeModal() {
         modalWindow.style.display = "none";
         document.body.classList.remove("scroll");
     }
+
     // Функція зробити модальне вікно видимим
     function openModal() {
         modalWindow.style.display = "flex";
@@ -119,12 +126,10 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // Закрити бодальне вікно на кнопку
-    modalClose.addEventListener("click", closeModal);
-
+ 
     // Закрити модальне вікно на пусте місце поза вікном
     window.addEventListener("click", (event) => {
-        if (event.target === modalWindow) {
+        if (event.target === modalWindow || event.target.getAttribute('data-close') == '' ) {
             closeModal();
         }
     });
@@ -139,7 +144,7 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    const modalTimer = setTimeout(openModal, 7000);
+    const modalTimer = setTimeout(openModal, 20000);
 
     function showModalByScroll() {
         if (
@@ -153,8 +158,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("scroll", showModalByScroll);
 
-
-    // класи для карточок
+    //==============================
+    //     класи для карточок
+    //==============================
 
     class MenuCard {
         constructor(src, alt, title, descr, price, ...classes) {
@@ -202,12 +208,13 @@ window.addEventListener("DOMContentLoaded", () => {
     );
     div.render();
 
-
-    // Forms
+    //==============================
+    //            Forms
+    //==============================
 
     const forms = document.querySelectorAll("form");
     const message = {
-        loading: 'загрузка',
+        loading: 'img/form/spinner.svg',
         seccess: 'спасиба скоро з вами зважемся',
         failed: 'щось пішло не так...'
     }
@@ -220,45 +227,90 @@ window.addEventListener("DOMContentLoaded", () => {
         form.addEventListener('submit', (event) => {
             event.preventDefault();
             
-            const statusMessage = document.createElement('div');
-            statusMessage.classList.add('status');
-            statusMessage.textContent = message.loading;
-            form.append(statusMessage);
+            const statusMessage = document.createElement('img');
+            statusMessage.src = message.loading;
+            statusMessage.style.cssText = `
+                display: block;
+                margin: auto;
+            `;
+
+            form.after(statusMessage);
 
 
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-
-            request.setRequestHeader('Content-type', 'application/json');
             const formData = new FormData(form);
-
             const object = {}
 
             formData.forEach(function(value, index) {
                 object[index] = value;
             })
 
-            const objectJSON = JSON.stringify(object);
+            fetch('server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            })
+            .then(data => data.text())
+            .then(data => {
+                console.log(data);
+                showThanksModal(message.seccess);
+                statusMessage.remove();
+            })
+            .catch(error => {
+                console.log(error);
+                showThanksModal(message.failed);
+            })
+            .finally(() => {
+                form.reset();
 
-
-            request.send(objectJSON);
-
-            request.addEventListener('load', () => {
-                if (request.status == 200){
-                    console.log(request.response);
-                    statusMessage.textContent = message.seccess;
-                    form.reset();
-                    setTimeout(() => {
-                        statusMessage.remove();
-                    } , 2000)
-                } else {
-                    statusMessage.textContent = message.failed;
-                }
             })
 
         })
     }
 
 
+    function showThanksModal(message){
+        const prevModalDialog = document.querySelector('.modal__dialog');
 
+        prevModalDialog.classList.add('hide');
+        // prevModalDialog.style.display = 'none'
+
+        openModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <disv data-close class="modal__close">&times;</disv>
+                <div class="modal__title"> ${message} </div>
+            </div>
+        `;
+
+        document.querySelector('.modal').append(thanksModal);
+
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();
+        }, 4000)
+
+    }
+
+
+    //==============================
+    //            API
+    //==============================
+ 
+    // fetch('https://jsonplaceholder.typicode.com/posts' , {
+    //     method: 'POST',
+    //     body: JSON.stringify({ name: 'alex'}),
+    //     headers: {
+    //         'content-type': 'application/json'
+    //     }
+    // })
+    //   .then(response => response.json())
+    //   .then(json => console.log(json))
+      
 });
