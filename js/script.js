@@ -299,18 +299,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    //==============================
-    //            API
-    //==============================
- 
-    // fetch('https://jsonplaceholder.typicode.com/posts' , {
-    //     method: 'POST',
-    //     body: JSON.stringify({ name: 'alex'}),
-    //     headers: {
-    //         'content-type': 'application/json'
-    //     }
-    // })
-    //   .then(response => response.json())
-    //   .then(json => console.log(json))
-      
+    
+
 });
