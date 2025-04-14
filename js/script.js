@@ -199,14 +199,24 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    const div = new MenuCard(
-        "img/tabs/vegy.jpg",
-        "vegy",
-        'Меню "Фитнес"',
-        'Менюключительно полезные ингредbhvuhblhbrf re fver f er f s gf sd fds fggsdfg иенты',
-        9, 
-    );
-    div.render();
+    const getData = async (url) => {
+        const res = await fetch(url)
+
+        if (res.status !== 200){
+            throw new Error(`could not fetch ${url} , status ${res.status}`)
+        }
+
+        return await res.json();
+    }
+
+    getData('http://localhost:3000/menu')
+        .then(data => {
+            data.forEach(({img, altimg, title, descr, price}) =>{
+                new MenuCard(img, altimg, title, descr, price).render()
+            })
+        })
+
+   
 
     //==============================
     //            Forms
@@ -220,10 +230,22 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     forms.forEach(item => {
-        postData(item);
+        bindPostData(item);
     })
 
-    function postData(form){
+    const postData = async (url, data) => {
+        const res = await fetch(url, {
+            method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: data
+        })
+
+        return await res.json();
+    }
+
+    function bindPostData(form){
         form.addEventListener('submit', (event) => {
             event.preventDefault();
             
@@ -244,14 +266,8 @@ window.addEventListener("DOMContentLoaded", () => {
                 object[index] = value;
             })
 
-            fetch('server.php', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify(object)
-            })
-            .then(data => data.text())
+            postData('http://localhost:3000/requests', JSON.stringify(object))
+            // .then(data => data.text())
             .then(data => {
                 console.log(data);
                 showThanksModal(message.seccess);
@@ -298,7 +314,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
     }
 
+    //==============================
 
+    fetch('http://localhost:3000/menu')
+        .then(response => response.json())
+        .then(json => console.log(json))
     
 
 });
