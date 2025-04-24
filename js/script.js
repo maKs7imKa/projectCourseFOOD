@@ -40,7 +40,7 @@ window.addEventListener("DOMContentLoaded", () => {
     //           timer
     //==============================
 
-    const deadline = "2025-04-20";
+    const deadline = "2025-06-20";
 
     function getTimeRemaining(endTime) {
         let days, hours, minutes, seconds;
@@ -209,14 +209,20 @@ window.addEventListener("DOMContentLoaded", () => {
         return await res.json();
     }
 
-    getData('http://localhost:3000/menu')
-        .then(data => {
-            data.forEach(({img, altimg, title, descr, price}) =>{
-                new MenuCard(img, altimg, title, descr, price).render()
-            })
-        })
+    // getData('http://localhost:3000/menu')
+    //     .then(data => {
+            // data.forEach(({img, altimg, title, descr, price}) =>{
+            //     new MenuCard(img, altimg, title, descr, price).render()
+            // })
+    //     })
 
    
+    axios.get('http://localhost:3000/menu')
+        .then(data => {
+            data.data.forEach(({img, altimg, title, descr, price}) =>{
+            new MenuCard(img, altimg, title, descr, price).render()
+            })
+        })
 
     //==============================
     //            Forms
@@ -316,9 +322,60 @@ window.addEventListener("DOMContentLoaded", () => {
 
     //==============================
 
-    fetch('http://localhost:3000/menu')
-        .then(response => response.json())
-        .then(json => console.log(json))
+    // fetch('http://localhost:3000/menu')
+    //     .then(response => response.json())
+    //     .then(json => console.log(json))
     
+
+
+    //==============================
+    //          Slider 
+    //==============================
+
+
+    const slides = document.querySelectorAll('.offer__slide'),
+          prev = document.querySelector('.offer__slider-prev'),
+          next = document.querySelector('.offer__slider-next'),
+          slideValue = document.querySelector('#current'),
+          slideTotal = document.querySelector('#total')
+
+    let slideIndex = localStorage.getItem('slideValue') || 1;
+
+    showSlides(slideIndex);
+
+    function showSlides(n){
+        if (n > slides.length){
+            slideIndex = 1;
+        }
+        if (n < 1){
+            slideIndex = slides.length;
+        } 
+        slides.forEach(slide => {
+            slide.style.display = 'none';
+        })
+
+        slides[slideIndex - 1].style.display = 'block';
+        localStorage.setItem('slideValue', slideIndex)
+        slideValue.textContent = slideIndex;
+        slideTotal.textContent = slides.length;
+
+    }
+
+    function plusSlide(n){
+        showSlides(slideIndex += n)
+    }
+
+    prev.addEventListener('click', () => plusSlide(-1));
+    next.addEventListener('click', () => plusSlide(1));
+
+
+           
+
+
+
+
+
+    // json-server db.json
+
 
 });
