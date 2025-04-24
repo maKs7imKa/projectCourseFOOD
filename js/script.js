@@ -327,46 +327,104 @@ window.addEventListener("DOMContentLoaded", () => {
     //     .then(json => console.log(json))
     
 
+ 
+    //^==============================
+    //^           Slider 
+    //^==============================
 
-    //==============================
-    //          Slider 
-    //==============================
-
-
+    // === Отримання елементів DOM ===
     const slides = document.querySelectorAll('.offer__slide'),
           prev = document.querySelector('.offer__slider-prev'),
           next = document.querySelector('.offer__slider-next'),
           slideValue = document.querySelector('#current'),
-          slideTotal = document.querySelector('#total')
+          slideTotal = document.querySelector('#total'),
+          slidesWrapper = document.querySelector('.offer__slider-wrapper'),
+          slidewField = document.querySelector('.offer__slider-inner'),
+          width = window.getComputedStyle(slidesWrapper).width;
 
-    let slideIndex = localStorage.getItem('slideValue') || 1;
+    // === Ініціалізація змінних та зчитування з localStorage ===
+    let slideIndex = +localStorage.getItem('slideValue') || 1;
+    let offset = +localStorage.getItem('offset') || 0;
 
-    showSlides(slideIndex);
+    // === Налаштування стилів для слайдера ===
+    slidewField.style.width = 100 * slides.length + '%';
+    slidewField.style.display = 'flex';
+    slidewField.style.transition = '0.5s all';
+    slidewField.style.background = 'white';
+    slidesWrapper.style.overflow = 'hidden';
 
-    function showSlides(n){
-        if (n > slides.length){
-            slideIndex = 1;
-        }
-        if (n < 1){
-            slideIndex = slides.length;
-        } 
-        slides.forEach(slide => {
-            slide.style.display = 'none';
-        })
+    slides.forEach(slide => {
+    slide.style.width = width;
+    slide.style.margin = '20px';
+    });
 
-        slides[slideIndex - 1].style.display = 'block';
-        localStorage.setItem('slideValue', slideIndex)
-        slideValue.textContent = slideIndex;
-        slideTotal.textContent = slides.length;
+    // === Відображення поточного стану слайдера ===
+    slideTotal.textContent = slides.length;
+    slideValue.textContent = slideIndex;
+    slidewField.style.transform = `translateX(-${offset}px)`;
 
+    // === Перехід до наступного слайду ===
+    next.addEventListener('click', () => {
+    slideIndex++;
+    if (slideIndex > slides.length) slideIndex = 1;
+    slideValue.textContent = slideIndex;
+
+    if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
+    offset = 0;
+    } else {
+    offset += +width.slice(0, width.length - 2);
     }
 
-    function plusSlide(n){
-        showSlides(slideIndex += n)
+    slidewField.style.transform = `translateX(-${offset}px)`;
+    localStorage.setItem('slideValue', slideIndex);
+    localStorage.setItem('offset', offset);
+    });
+
+    // === Перехід до попереднього слайду ===
+    prev.addEventListener('click', () => {
+    slideIndex--;
+    if (slideIndex < 1) slideIndex = slides.length;
+    slideValue.textContent = slideIndex;
+
+    if (offset == 0) {
+    offset += +width.slice(0, width.length - 2) * (slides.length - 1);
+    } else {
+    offset -= +width.slice(0, width.length - 2);
     }
 
-    prev.addEventListener('click', () => plusSlide(-1));
-    next.addEventListener('click', () => plusSlide(1));
+    slidewField.style.transform = `translateX(-${offset}px)`;
+    localStorage.setItem('slideValue', slideIndex);
+    localStorage.setItem('offset', offset);
+    });
+
+
+
+    // showSlides(slideIndex);
+
+    // function showSlides(n){
+    //     if (n > slides.length){
+    //         slideIndex = 1;
+    //     }
+    //     if (n < 1){
+    //         slideIndex = slides.length;
+    //     } 
+    //     slides.forEach(slide => {
+    //         slide.style.display = 'none';
+    //     })
+
+    //     slides[slideIndex - 1].style.display = 'block';
+    //     localStorage.setItem('slideValue', slideIndex)
+    //     slideValue.textContent = slideIndex;
+    //     slideTotal.textContent = slides.length;
+
+    // }
+
+    // function plusSlide(n){
+    //     showSlides(slideIndex += n)
+    // }
+
+    // prev.addEventListener('click', () => plusSlide(-1));
+    // next.addEventListener('click', () => plusSlide(1));
 
 
            
