@@ -126,10 +126,10 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     });
 
- 
+
     // Закрити модальне вікно на пусте місце поза вікном
     window.addEventListener("click", (event) => {
-        if (event.target === modalWindow || event.target.getAttribute('data-close') == '' ) {
+        if (event.target === modalWindow || event.target.getAttribute('data-close') == '') {
             closeModal();
         }
     });
@@ -175,13 +175,13 @@ window.addEventListener("DOMContentLoaded", () => {
         }
 
         changeToUAH() {
-            this.price = this.price * this.transfer;    
+            this.price = this.price * this.transfer;
         }
 
         render() {
             const div = document.createElement("div");
             div.classList.add("menu__item");
-            this.classes.forEach(className => { 
+            this.classes.forEach(className => {
                 div.classList.add(className);
             });
             div.innerHTML = `
@@ -202,7 +202,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const getData = async (url) => {
         const res = await fetch(url)
 
-        if (res.status !== 200){
+        if (res.status !== 200) {
             throw new Error(`could not fetch ${url} , status ${res.status}`)
         }
 
@@ -211,16 +211,16 @@ window.addEventListener("DOMContentLoaded", () => {
 
     // getData('http://localhost:3000/menu')
     //     .then(data => {
-            // data.forEach(({img, altimg, title, descr, price}) =>{
-            //     new MenuCard(img, altimg, title, descr, price).render()
-            // })
+    // data.forEach(({img, altimg, title, descr, price}) =>{
+    //     new MenuCard(img, altimg, title, descr, price).render()
+    // })
     //     })
 
-   
+
     axios.get('http://localhost:3000/menu')
         .then(data => {
-            data.data.forEach(({img, altimg, title, descr, price}) =>{
-            new MenuCard(img, altimg, title, descr, price).render()
+            data.data.forEach(({ img, altimg, title, descr, price }) => {
+                new MenuCard(img, altimg, title, descr, price).render()
             })
         })
 
@@ -242,19 +242,19 @@ window.addEventListener("DOMContentLoaded", () => {
     const postData = async (url, data) => {
         const res = await fetch(url, {
             method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: data
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: data
         })
 
         return await res.json();
     }
 
-    function bindPostData(form){
+    function bindPostData(form) {
         form.addEventListener('submit', (event) => {
             event.preventDefault();
-            
+
             const statusMessage = document.createElement('img');
             statusMessage.src = message.loading;
             statusMessage.style.cssText = `
@@ -268,31 +268,31 @@ window.addEventListener("DOMContentLoaded", () => {
             const formData = new FormData(form);
             const object = {}
 
-            formData.forEach(function(value, index) {
+            formData.forEach(function (value, index) {
                 object[index] = value;
             })
 
             postData('http://localhost:3000/requests', JSON.stringify(object))
-            // .then(data => data.text())
-            .then(data => {
-                console.log(data);
-                showThanksModal(message.seccess);
-                statusMessage.remove();
-            })
-            .catch(error => {
-                console.log(error);
-                showThanksModal(message.failed);
-            })
-            .finally(() => {
-                form.reset();
+                // .then(data => data.text())
+                .then(data => {
+                    console.log(data);
+                    showThanksModal(message.seccess);
+                    statusMessage.remove();
+                })
+                .catch(error => {
+                    console.log(error);
+                    showThanksModal(message.failed);
+                })
+                .finally(() => {
+                    form.reset();
 
-            })
+                })
 
         })
     }
 
 
-    function showThanksModal(message){
+    function showThanksModal(message) {
         const prevModalDialog = document.querySelector('.modal__dialog');
 
         prevModalDialog.classList.add('hide');
@@ -325,14 +325,14 @@ window.addEventListener("DOMContentLoaded", () => {
     // fetch('http://localhost:3000/menu')
     //     .then(response => response.json())
     //     .then(json => console.log(json))
-    
 
- 
+
+
     //^==============================
     //^           Slider 
     //^==============================
 
-  // === Отримання елементів DOM ===
+    // === Отримання елементів DOM ===
     const slides = document.querySelectorAll('.offer__slide'),
         slider = document.querySelector('.offer__slider'),
         prev = document.querySelector('.offer__slider-prev'),
@@ -344,18 +344,18 @@ window.addEventListener("DOMContentLoaded", () => {
         width = window.getComputedStyle(slidesWrapper).width;
 
     // === Функція для активного стилю точки ===
-    function dotActileView(){
+    function dotActileView() {
         dots.forEach(dot => dot.style.opacity = '.5')
         dots[slideIndex - 1].style.opacity = '1';
     }
 
     // === Збереження поточного стану в localStorage ===
-    function saveLocalStorage(){
+    function saveLocalStorage() {
         localStorage.setItem('slideValue', slideIndex);
         localStorage.setItem('offset', offset);
     }
 
-    function viewChangesOnPage(){
+    function viewChangesOnPage() {
         slideValue.textContent = slideIndex;
         slidewField.style.transform = `translateX(-${offset}px)`;
     }
@@ -387,7 +387,7 @@ window.addEventListener("DOMContentLoaded", () => {
     slider.append(indicators);
 
     // === Генерація точок індикатора ===
-    for(let i = 0; i < slides.length; i++){
+    for (let i = 0; i < slides.length; i++) {
         const dot = document.createElement('li');
         dot.setAttribute('data-slide-to', i + 1);
         dot.classList.add('dot');
@@ -405,7 +405,7 @@ window.addEventListener("DOMContentLoaded", () => {
     next.addEventListener('click', () => {
         slideIndex++;
         if (slideIndex > slides.length) slideIndex = 1;
-    
+
         if (offset == +width.slice(0, width.length - 2) * (slides.length - 1)) {
             offset = 0;
         } else {
@@ -434,16 +434,89 @@ window.addEventListener("DOMContentLoaded", () => {
     // === Обробка кліків по точках індикатора ===
     dots.forEach(dot => {
         dot.addEventListener('click', (e) => {
-        const slideTo = e.target.getAttribute('data-slide-to');
+            const slideTo = e.target.getAttribute('data-slide-to');
 
-        slideIndex = slideTo;
-        offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+            slideIndex = slideTo;
+            offset = +width.slice(0, width.length - 2) * (slideTo - 1);
 
-        viewChangesOnPage()
-        dotActileView()
-        saveLocalStorage()
+            viewChangesOnPage()
+            dotActileView()
+            saveLocalStorage()
         })
     })
+
+    //  =====================================================
+    //                 Калькулятор калорій
+    //  =====================================================
+
+    // для жінок: (вага (кг) x 10) + (зріст (см) x 6,25) - (вік (років) x 5) - 161;
+    // для чоловіків: (вага (кг) x 10) + (зріст (см) x 6,25) - (вік (років) x 5) + 5;
+    const result = document.querySelector('.calculating__result span');
+    let sex = "female", height, weidht, age, ratio = '1.375';
+
+    function calcTotal() {
+        if (!sex || !height || !weidht || !age || !ratio) {
+            result.textContent = ':) _____ ';
+            return;
+        }
+
+        if (sex === 'female') {
+            result.textContent = (((weidht * 10) + (height * 6.25) - (age * 5) - 161) * ratio).toFixed(1);
+        } else {
+            result.textContent = (((weidht * 10) + (height * 6.25) - (age * 5) + 5) * ratio).toFixed(1);
+        }
+    }
+
+    calcTotal();
+
+    function getStaticInformarion(parentSelector, activeClass) {
+        const elements = document.querySelectorAll(`${parentSelector} div`);
+
+
+        elements.forEach(elem => {
+            elem.addEventListener('click', (e) => {
+                if (e.target.getAttribute('data-ratio')){
+                    ratio = +e.target.getAttribute('data-ratio')
+                } else {
+                    sex = e.target.getAttribute('id')
+                }
+    
+                elements.forEach(elem => {
+                    elem.classList.remove(activeClass)
+                })
+    
+                e.target.classList.add(activeClass)
+                calcTotal();
+            })
+        })
+
+    }
+
+    getStaticInformarion('#gender', 'calculating__choose-item_active');
+    getStaticInformarion('.calculating__choose_big', 'calculating__choose-item_active')
+
+    function getDynamicInformation(selector){
+        const input = document.querySelector(selector);
+
+        input.addEventListener('input', () => {
+            switch(input.getAttribute('id')) {
+                case "height": 
+                    height = +input.value;
+                    break;
+                case 'weight': 
+                    weidht = +input.value;
+                    break;
+                case 'age':
+                    age = +input.value; 
+                    break;
+            }
+            calcTotal();
+        })
+    }
+
+    getDynamicInformation('#height')
+    getDynamicInformation('#weight')
+    getDynamicInformation('#age')
 
 
 
