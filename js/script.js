@@ -452,7 +452,36 @@ window.addEventListener("DOMContentLoaded", () => {
     // для жінок: (вага (кг) x 10) + (зріст (см) x 6,25) - (вік (років) x 5) - 161;
     // для чоловіків: (вага (кг) x 10) + (зріст (см) x 6,25) - (вік (років) x 5) + 5;
     const result = document.querySelector('.calculating__result span');
-    let sex = "female", height, weidht, age, ratio = '1.375';
+    let sex, height, weidht, age, ratio;
+
+    if (localStorage.getItem('sex')) {
+        sex = localStorage.getItem('sex');
+    } else {
+        sex = 'famale';
+        localStorage.setItem('sex ', 'famale');
+    }
+
+    if (localStorage.getItem('ratio')) {
+        ratio = localStorage.getItem('ratio');
+    } else {
+        ratio = '1.375';
+        localStorage.setItem('ratio', '1.375');
+    }
+
+    function initLocalSettings(selector, activeClass) {
+        const elements = document.querySelectorAll(selector);
+
+        elements.forEach(elem => {
+            elem.classList.remove(activeClass);
+            if (elem.getAttribute('id') === localStorage.getItem('sex')) {
+                elem.classList.add(activeClass);
+            }
+            if (elem.getAttribute('data-ratio') === localStorage.getItem('ratio')) {
+                elem.classList.add(activeClass);
+            }
+        })
+    }
+
 
     function calcTotal() {
         if (!sex || !height || !weidht || !age || !ratio) {
@@ -477,8 +506,11 @@ window.addEventListener("DOMContentLoaded", () => {
             elem.addEventListener('click', (e) => {
                 if (e.target.getAttribute('data-ratio')){
                     ratio = +e.target.getAttribute('data-ratio')
+                    localStorage.setItem('ratio', +e.target.getAttribute('data-ratio'))
                 } else {
                     sex = e.target.getAttribute('id')
+                    localStorage.setItem('sex', e.target.getAttribute('id'))
+
                 }
     
                 elements.forEach(elem => {
@@ -497,6 +529,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
     function getDynamicInformation(selector){
         const input = document.querySelector(selector);
+
+      
 
         input.addEventListener('input', () => {
             switch(input.getAttribute('id')) {
