@@ -457,8 +457,8 @@ window.addEventListener("DOMContentLoaded", () => {
     if (localStorage.getItem('sex')) {
         sex = localStorage.getItem('sex');
     } else {
-        sex = 'famale';
-        localStorage.setItem('sex ', 'famale');
+        sex = 'female';
+        localStorage.setItem('sex', 'female');
     }
 
     if (localStorage.getItem('ratio')) {
@@ -482,6 +482,8 @@ window.addEventListener("DOMContentLoaded", () => {
         })
     }
 
+    initLocalSettings('#gender div', 'calculating__choose-item_active');
+    initLocalSettings('.calculating__choose_big div', 'calculating__choose-item_active');
 
     function calcTotal() {
         if (!sex || !height || !weidht || !age || !ratio) {
@@ -507,7 +509,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 if (e.target.getAttribute('data-ratio')){
                     ratio = +e.target.getAttribute('data-ratio')
                     localStorage.setItem('ratio', +e.target.getAttribute('data-ratio'))
-                } else {
+                } else {  
                     sex = e.target.getAttribute('id')
                     localStorage.setItem('sex', e.target.getAttribute('id'))
 
